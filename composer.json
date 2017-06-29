@@ -1,6 +1,6 @@
 {
     "name": "adamb/hcldc",
-    "version": "1.0.0",
+    "version": "v1.0.0",
     "description": "A class to build the Highway Code data from the database",
     "type": "library",
     "require": {
