@@ -37,6 +37,42 @@ class HighwayCode{
     }
     
     /**
+     * Set the Rules table parameter
+     * @param string $table This should be the name of the rules table in the database
+     * @return $this HighwayCode
+     */
+    public function setRulesTable($table = 'highway_code'){
+        $this->rulesTable = $table;
+        return $this;
+    }
+    
+    /**
+     * Returns the rules table name
+     * @return string The name of the HC rules table will be returned
+     */
+    public function getRulesTable(){
+        return $this->rulesTable;
+    }
+    
+    /**
+     * Sets the section table parameter
+     * @param string $table This should be the section table in the database
+     * @return $this HighwayCode
+     */
+    public function setSectionTable($table = 'highway_code_section'){
+        $this->sectionTable = $table;
+        return $this;
+    }
+    
+    /**
+     * Returns the section table name
+     * @return string The name of the HC section table will be returned
+     */
+    public function getSectionTable(){
+        return $this->sectionTable;
+    }
+    
+    /**
      * Sets the audio status if it's set to true audio will be returned as part of the rules
      * @param boolean $audio If set to true audio HTML will returned else nothing will be returned
      * @return $this HighwayCode
@@ -119,10 +155,10 @@ class HighwayCode{
                 $sql[] = "`hcno` = ?";
                 $values[] = (int)$ruleid;
             }
-            return $this->db->query("SELECT * FROM `".$this->rulesTable."` WHERE ".implode(' OR ', $sql)." ORDER BY `hcno` ASC;", $values);
+            return $this->db->query("SELECT * FROM `".$this->getRulesTable()."` WHERE ".implode(' OR ', $sql)." ORDER BY `hcno` ASC;", $values);
         }
         else{
-            return $this->db->select($this->rulesTable, array('hcno' => $rule));
+            return $this->db->select($this->getRulesTable(), array('hcno' => $rule));
         }
     }
     
@@ -132,7 +168,7 @@ class HighwayCode{
      * @return boolean Returns true if it's the last section else returns false
      */
     public function isLastSection($section){
-        if($this->db->select($this->sectionTable, array('sec_no' => array('>', $section)))){return true;}
+        if($this->db->select($this->getSectionTable(), array('sec_no' => array('>', $section)))){return true;}
         return false;
     }
     
@@ -142,7 +178,7 @@ class HighwayCode{
      * @return string|boolean If the section exists the name will be returned else will return false
      */
     public function getSectionName($section){
-        $title = $this->db->select($this->sectionTable, array('sec_no' => $section), array('title'));
+        $title = $this->db->select($this->getSectionTable(), array('sec_no' => $section), array('title'));
         if($title){
             return $title['title'];
         }
@@ -155,7 +191,7 @@ class HighwayCode{
      * @return string Returns the section HTML code
      */
     public function getSectionRules($section){
-        $rules = $this->db->selectAll($this->rulesTable, array('pubsec' => ($section + 1)), array('hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'), array('hcno' => 'ASC'));
+        $rules = $this->db->selectAll($this->getRulesTable(), array('pubsec' => ($section + 1)), array('hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'), array('hcno' => 'ASC'));
         foreach($rules as $i => $rule){
             if($rule['imagetitle1']){$rules[$i]['image'] = $this->buildImage($rule['imagetitle1']);}
             if($this->getAudioStatus()){$rules[$i]['audio'] = $this->addAudio($rule['hcno']);}
@@ -168,7 +204,7 @@ class HighwayCode{
      * @return string Returns a list of link for the highway code sections
      */
     public function listSections(){
-        return $this->db->selectAll($this->sectionTable);
+        return $this->db->selectAll($this->getSectionTable());
     }
     
     /**
