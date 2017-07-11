@@ -163,6 +163,16 @@ class HighwayCode{
     }
     
     /**
+     * Checks to see if this is the first section
+     * @param int $section The current section number
+     * @return boolean Returns true if it's the first section else returns false
+     */
+    public function isFirstSection($section){
+        if($this->db->select($this->getSectionTable(), array('sec_no' => array('<', $section)))){return true;}
+        return false;
+    }
+    
+    /**
      * Checks to see if this is the last section
      * @param int $section The current section number
      * @return boolean Returns true if it's the last section else returns false
@@ -197,6 +207,22 @@ class HighwayCode{
             if($this->getAudioStatus()){$rules[$i]['audio'] = $this->addAudio($rule['hcno']);}
         }
         return $rules;
+    }
+    
+    /**
+     * Brings all of the required information together to build a section
+     * @param int $section This should be the section number you wish to build
+     * @return array An array containing all of the values required to build will be returned
+     */
+    public function buildSection($section){
+        if(is_numeric($section)){
+            $hc = array();
+            $hc['title'] = $this->getSectionName($section);
+            $hc['rules'] = $this->getSectionRules($section);
+            $hc['isFirst'] = $this->isLastSection($section);
+            $hc['isLast'] = $this->isLastSection($section);
+        }
+        return $hc;
     }
     
     /**
