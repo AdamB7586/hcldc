@@ -219,7 +219,7 @@ class HighwayCode{
             $hc = array();
             $hc['title'] = $this->getSectionName($section);
             $hc['rules'] = $this->getSectionRules($section);
-            $hc['isFirst'] = $this->isLastSection($section);
+            $hc['isFirst'] = $this->isFirstSection($section);
             $hc['isLast'] = $this->isLastSection($section);
         }
         return $hc;
