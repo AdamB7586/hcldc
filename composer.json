@@ -16,6 +16,13 @@
         }
     ],
     "autoload": {
-        "files": ["src/HighwayCode.php"]
+        "psr-4": {
+            "LDC\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LDC\\Tests\\": "tests/"
+        }
     }
 }
