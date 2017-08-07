@@ -186,7 +186,7 @@ class HighwayCode{
     
     /**
      * Returns the Highway code Section name
-     * @param int $section This should be the section number
+     * @param int|array $section This should be the section number or an array for section less or greater than
      * @return string|false If the section exists the name will be returned else will return false
      */
     public function getSectionName($section){
