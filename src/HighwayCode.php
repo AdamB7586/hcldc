@@ -170,7 +170,7 @@ class HighwayCode{
      * @return boolean Returns true if it's the first section else returns false
      */
     public function isFirstSection($section){
-        if($this->getSectionName(array('<', $section))){return true;}
+        if($this->getSectionName(array('<', $section)) !== false){return true;}
         return false;
     }
     
@@ -180,7 +180,7 @@ class HighwayCode{
      * @return boolean Returns true if it's the last section else returns false
      */
     public function isLastSection($section){
-        if($this->getSectionName(array('>', $section))){return true;}
+        if($this->getSectionName(array('>', $section)) !== false){return true;}
         return false;
     }
     
