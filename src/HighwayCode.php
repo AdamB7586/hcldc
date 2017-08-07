@@ -161,9 +161,7 @@ class HighwayCode{
             }
             return $this->db->query("SELECT * FROM `".$this->getRulesTable()."` WHERE ".implode(' OR ', $sql)." ORDER BY `hcno` ASC;", $values);
         }
-        else{
-            return $this->db->select($this->getRulesTable(), array('hcno' => $rule));
-        }
+        return $this->db->select($this->getRulesTable(), array('hcno' => $rule));
     }
     
     /**
@@ -189,7 +187,7 @@ class HighwayCode{
     /**
      * Returns the Highway code Section name
      * @param int $section This should be the section number
-     * @return string|boolean If the section exists the name will be returned else will return false
+     * @return string|false If the section exists the name will be returned else will return false
      */
     public function getSectionName($section){
         $title = $this->db->select($this->getSectionTable(), array('sec_no' => $section), array('title'));
@@ -216,7 +214,7 @@ class HighwayCode{
     /**
      * Brings all of the required information together to build a section
      * @param int $section This should be the section number you wish to build
-     * @return array An array containing all of the values required to build will be returned
+     * @return array|false An array containing all of the values required to build will be returned
      */
     public function buildSection($section){
         if(is_numeric($section)){
@@ -225,8 +223,9 @@ class HighwayCode{
             $hc['rules'] = $this->getSectionRules($section);
             $hc['isFirst'] = $this->isFirstSection($section);
             $hc['isLast'] = $this->isLastSection($section);
+            return $hc;
         }
-        return $hc;
+        return false;
     }
     
     /**
@@ -240,7 +239,7 @@ class HighwayCode{
     /**
      * Build the image information for a highway code image
      * @param string $image Should bet the image name
-     * @return string returns the image HTML code with with and height
+     * @return string|false returns the image HTML code with with and height
      */
     public function buildImage($image){
         if(!is_null($image)){
@@ -259,7 +258,7 @@ class HighwayCode{
     /**
      * Returns the HTML5 audio HTML information as a string
      * @param int $prim This should be the question prim number
-     * @return string Returns the HTML needed for the audio
+     * @return string|false Returns the HTML needed for the audio
      */
     protected function addAudio($prim){
         if($this->getAudioStatus()){
