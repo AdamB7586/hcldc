@@ -8,6 +8,8 @@
  * @package HighwayCode
  * @version v1.0.0
  */
+namespace LDC;
+
 use DBAL\Database;
 
 class HighwayCode{
@@ -151,6 +153,8 @@ class HighwayCode{
      */
     public function getRule($rule){
         if(is_array($rule)){
+            $sql = array();
+            $values = array();
             foreach($rule as $ruleid){
                 $sql[] = "`hcno` = ?";
                 $values[] = (int)$ruleid;
@@ -189,7 +193,7 @@ class HighwayCode{
      */
     public function getSectionName($section){
         $title = $this->db->select($this->getSectionTable(), array('sec_no' => $section), array('title'));
-        if($title){
+        if(!empty($title)){
             return $title['title'];
         }
         return false;
@@ -241,6 +245,7 @@ class HighwayCode{
     public function buildImage($image){
         if(!is_null($image)){
             if(file_exists($this->getRootPath().$this->getImagePath().$image)){
+                $img = array();
                 list($width, $height) = getimagesize($this->getRootPath().$this->getImagePath().$image);
                 $img['image'] = $this->getImagePath().$image;
                 $img['width'] = $width;
@@ -254,7 +259,6 @@ class HighwayCode{
     /**
      * Returns the HTML5 audio HTML information as a string
      * @param int $prim This should be the question prim number
-     * @param string $letter This should be the letter of the question or answer
      * @return string Returns the HTML needed for the audio
      */
     protected function addAudio($prim){
