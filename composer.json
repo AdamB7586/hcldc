@@ -3,6 +3,7 @@
     "version": "v1.0.4",
     "description": "A class to build the Highway Code data from the database",
     "type": "library",
+    "license": "proprietary",
     "require": {
         "adamb/database": "^1.0"
     },
