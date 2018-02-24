@@ -8,7 +8,7 @@
  * @package HighwayCode
  * @version v1.0.0
  */
-namespace LDC;
+namespace DVSA;
 
 use DBAL\Database;
 
@@ -26,7 +26,7 @@ class HighwayCode{
     
     /**
      * Constructor sets the essential variables needed to get the class to work  
-     * @param Database $db This should be an instance of adamb/database
+     * @param Database $db This should be an instance of the Database class
      * @param string $rootPath This should be the server root path to get image information (do not include URL path)
      * @param string $audioPath This should be the path to the audio files the MP3 and OGG files will be included in the returned HTML automatically
      * @param boolean $audio If you don't want the audio file HTML to be returned set to false else set to true (default = true)

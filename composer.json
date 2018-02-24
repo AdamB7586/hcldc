@@ -1,6 +1,5 @@
 {
-    "name": "adamb/hcldc",
-    "version": "v1.0.4",
+    "name": "adamb/dvsahc",
     "description": "A class to build the Highway Code data from the database",
     "type": "library",
     "license": "proprietary",
@@ -18,12 +17,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "LDC\\": "src/"
+            "DVSA\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LDC\\Tests\\": "tests/"
+            "DVSA\\Tests\\": "tests/"
         }
     }
 }
