@@ -1,11 +1,9 @@
-DROP TABLE IF EXISTS `hc_section`;
 CREATE TABLE IF NOT EXISTS `hc_section` (
   `sec_no` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(1000) NOT NULL,
   PRIMARY KEY (`sec_no`)
 )
 
-DROP TABLE IF EXISTS `highway_code`;
 CREATE TABLE IF NOT EXISTS `highway_code` (
   `hcno` int(11) NOT NULL AUTO_INCREMENT,
   `hcrule` longtext,
