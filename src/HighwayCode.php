@@ -15,7 +15,7 @@ use DBAL\Database;
 class HighwayCode{
     protected $db;
     
-    protected $audioEnabled = true;
+    public $audioEnabled = true;
     
     protected $rulesTable = 'highway_code';
     protected $sectionTable = 'highway_code_section';
@@ -44,7 +44,9 @@ class HighwayCode{
      * @return $this HighwayCode
      */
     public function setRulesTable($table = 'highway_code'){
-        $this->rulesTable = $table;
+        if(is_string($table)){
+            $this->rulesTable = $table;
+        }
         return $this;
     }
     
@@ -62,7 +64,9 @@ class HighwayCode{
      * @return $this HighwayCode
      */
     public function setSectionTable($table = 'highway_code_section'){
-        $this->sectionTable = $table;
+        if(is_string($table)){
+            $this->sectionTable = $table;
+        }
         return $this;
     }
     
@@ -80,7 +84,9 @@ class HighwayCode{
      * @return $this HighwayCode
      */
     public function setAudioStatus($audio){
-        $this->audioEnabled = $audio;
+        if(is_bool($audio)){
+            $this->audioEnabled = $audio;
+        }
         return $this;
     }
     
@@ -98,7 +104,9 @@ class HighwayCode{
      * @return $this HighwayCode
      */
     public function setAudioPath($path){
-        $this->audioPath = $path;
+        if(is_string($path)){
+            $this->audioPath = $path;
+        }
         return $this;
     }
     
@@ -116,7 +124,9 @@ class HighwayCode{
      * @return $this HighwayCode
      */
     public function setImagePath($path){
-        $this->imagePath = $path;
+        if(is_string($path)){
+            $this->imagePath = $path;
+        }
         return $this;
     }
     
@@ -134,7 +144,9 @@ class HighwayCode{
      * @return $this HighwayCode
      */
     public function setRootPath($path){
-        $this->rootPath = $path;
+        if(is_string($path) && is_dir($path)){
+            $this->rootPath = $path;
+        }
         return $this;
     }
     
