@@ -182,7 +182,7 @@ class HighwayCode{
      * @return boolean Returns true if it's the first section else returns false
      */
     public function isFirstSection($section){
-        if($this->getSectionName(array('<', $section)) !== false){return true;}
+        if($this->getSectionName(array('<', $section)) === false){return true;}
         return false;
     }
     
@@ -192,7 +192,7 @@ class HighwayCode{
      * @return boolean Returns true if it's the last section else returns false
      */
     public function isLastSection($section){
-        if($this->getSectionName(array('>', $section)) !== false){return true;}
+        if($this->getSectionName(array('>', $section)) === false){return true;}
         return false;
     }
     
@@ -215,12 +215,17 @@ class HighwayCode{
      * @return string Returns the section HTML code
      */
     public function getSectionRules($section){
-        $rules = $this->db->selectAll($this->getRulesTable(), array('pubsec' => ($section + 1)), array('hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'), array('hcno' => 'ASC'));
-        foreach($rules as $i => $rule){
-            if($rule['imagetitle1']){$rules[$i]['image'] = $this->buildImage($rule['imagetitle1']);}
-            if($this->getAudioStatus()){$rules[$i]['audio'] = $this->addAudio($rule['hcno']);}
+        if(is_numeric($section)){
+            $rules = $this->db->selectAll($this->getRulesTable(), array('pubsec' => (intval($section) + 1)), array('hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'), array('hcno' => 'ASC'));
+            if(is_array($rules)){
+                foreach($rules as $i => $rule){
+                    if($rule['imagetitle1']){$rules[$i]['image'] = $this->buildImage($rule['imagetitle1']);}
+                    if($this->getAudioStatus()){$rules[$i]['audio'] = $this->addAudio($rule['hcno']);}
+                }
+            }
+            return $rules;
         }
-        return $rules;
+        return false;
     }
     
     /**
