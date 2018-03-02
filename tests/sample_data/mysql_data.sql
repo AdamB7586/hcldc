@@ -1,4 +1,4 @@
-INSERT INTO `hc_section` (`sec_no`, `title`) VALUES
+INSERT INTO `highway_code_section` (`sec_no`, `title`) VALUES
 (1, 'Rules for pedestrians'),
 (2, 'Rules for users of powered wheelchairs'),
 (3, 'Rules about animals'),

@@ -72,7 +72,18 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getSectionTable
      */
     public function testSetTables() {
-        $this->markTestIncomplete();
+        $this->assertEquals('highway_code', $this->hc->getRulesTable());
+        $this->assertObjectHasAttribute('audioEnabled', $this->hc->setRulesTable(356345345));
+        $this->assertEquals('highway_code', $this->hc->getRulesTable());
+        $this->assertObjectHasAttribute('audioEnabled', $this->hc->setRulesTable('my_rules_table'));
+        $this->assertEquals('my_rules_table', $this->hc->getRulesTable());
+        
+
+        $this->assertEquals('highway_code_section', $this->hc->getSectionTable());
+        $this->assertObjectHasAttribute('audioEnabled', $this->hc->setSectionTable(false));
+        $this->assertEquals('highway_code_section', $this->hc->getSectionTable());
+        $this->assertObjectHasAttribute('audioEnabled', $this->hc->setSectionTable('my_section_table'));
+        $this->assertEquals('my_section_table', $this->hc->getSectionTable());
     }
     
     /**
@@ -81,7 +92,11 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getAudioPath
      */
     public function testAudioPath() {
-        $this->markTestIncomplete();
+        $this->assertEquals('/audio', $this->hc->getAudioPath());
+        $this->assertObjectHasAttribute('audioEnabled', $this->hc->setAudioPath(false));
+        $this->assertEquals('/audio', $this->hc->getAudioPath());
+        $this->assertObjectHasAttribute('audioEnabled', $this->hc->setAudioPath(''));
+        $this->assertEquals('', $this->hc->getAudioPath());
     }
     
     /**
@@ -104,7 +119,14 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getRulesTable
      */
     public function testGetRule(){
-        $this->markTestIncomplete();
+        $this->assertFalse($this->hc->getRule(false));
+        $this->assertFalse($this->hc->getRule('hello-world'));
+        $this->assertFalse($this->hc->getRule(-1));
+        $this->assertNotFalse($this->hc->getRule(46));
+        $this->assertArrayHasKey('hcrule', $this->hc->getRule(46));
+        $this->assertContains('Rule 46', $this->hc->getRule(46)['hcrule']);
+        $this->assertArrayHasKey('hcrule', $this->hc->getRule(array(1, 2))[1]);
+        $this->assertContains('Rule 2', $this->hc->getRule(array(1, 2))[1]['hcrule']);
     }
     
     /**
@@ -113,7 +135,10 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getSectionTable
      */
     public function testGetSectionName(){
-        $this->markTestIncomplete();
+        $this->assertFalse($this->hc->getSectionName(-1));
+        $this->assertFalse($this->hc->getSectionName('hello-world'));
+        $this->assertEquals('Rules for pedestrians', $this->hc->getSectionName(1));
+        $this->assertEquals('Motorways', $this->hc->getSectionName(12));
     }
     
     /**
@@ -127,7 +152,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::addAudio
      */
     public function testGetSectionRules(){
-        $this->markTestIncomplete();
+        $this->assertFalse($this->hc->getSectionRules('test'));
+        $this->assertArrayHasKey('hcrule', $this->hc->getSectionRules(2)[7]);
     }
     
     /**
@@ -146,7 +172,13 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::isLastSection
      */
     public function testBuildSection(){
-        $this->markTestIncomplete();
+        $this->assertEquals('Rules for pedestrians', $this->hc->buildSection(1)['title']);
+        $this->assertArrayHasKey('hcrule', $this->hc->buildSection(1)['rules'][0]);
+        $this->assertContains('Rule 2', $this->hc->buildSection(1)['rules'][1]['hcrule']);
+        $this->assertTrue($this->hc->buildSection(1)['isFirst']);
+        $this->assertFalse($this->hc->buildSection(1)['isLast']);
+        $this->assertFalse($this->hc->buildSection(30)['isFirst']);
+        $this->assertTrue($this->hc->buildSection(30)['isLast']);
     }
     
     /**
@@ -155,6 +187,7 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getSectionTable
      */
     public function testListSections(){
-        $this->markTestIncomplete();
+        $this->assertArrayHasKey('title', $this->hc->listSections()[3]);
+        $this->assertContains('Rules for ', $this->hc->listSections()[3]['title']);
     }
 }

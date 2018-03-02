@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `hc_section` (
+CREATE TABLE IF NOT EXISTS `highway_code_section` (
   `sec_no` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(1000) NOT NULL,
   PRIMARY KEY (`sec_no`)
