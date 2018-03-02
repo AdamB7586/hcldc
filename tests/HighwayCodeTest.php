@@ -105,12 +105,12 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getAudioStatus
      */
     public function testAudioStatus() {
+        $this->assertTrue($this->hc->getAudioStatus());
+        $this->assertObjectHasAttribute('audioEnabled', $this->hc->setAudioStatus(false));
         $this->assertFalse($this->hc->getAudioStatus());
-        $this->assertObjectHasAttribute('audioEnabled', $this->hc->setAudioStatus(true));
-        $this->assertTrue($this->hc->getAudioStatus());
         $this->assertObjectHasAttribute('audioEnabled', $this->hc->setAudioStatus('incorrect_value'));
-        $this->assertTrue($this->hc->getAudioStatus());
-        $this->hc->setAudioStatus(false);
+        $this->assertFalse($this->hc->getAudioStatus());
+        $this->hc->setAudioStatus(true);
     }
     
     /**
