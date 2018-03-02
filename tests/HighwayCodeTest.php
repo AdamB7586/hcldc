@@ -26,7 +26,7 @@ class HighwayCodeTest extends TestCase {
         else{
             $this->db->query(file_get_contents(dirname(dirname(__FILE__)).'/database/mysql_database.sql'));
             $this->db->query(file_get_contents(dirname(__FILE__).'/sample_data/mysql_data.sql'));
-            $this->hc = new HighwayCode($this->db, dirname(__FILE__).'/sample_data', '/audio', false);
+            $this->hc = new HighwayCode($this->db, dirname(__FILE__).'/sample_data', '/audio', true);
         }
     }
     
@@ -50,8 +50,8 @@ class HighwayCodeTest extends TestCase {
     
     /**
      * @covers DVSA\HighwayCode::__construct
-     * @covers DVSA\HighwayCode::setRootPath
-     * @covers DVSA\HighwayCode::getRootPath
+     * @covers DVSA\HighwayCode::setImagePath
+     * @covers DVSA\HighwayCode::getImagePath
      */
     public function testSetImagePath() {
         $this->assertEquals('/images/highway-code/', $this->hc->getImagePath());
@@ -179,6 +179,7 @@ class HighwayCodeTest extends TestCase {
         $this->assertFalse($this->hc->buildSection(1)['isLast']);
         $this->assertFalse($this->hc->buildSection(30)['isFirst']);
         $this->assertTrue($this->hc->buildSection(30)['isLast']);
+        $this->assertFalse($this->hc->buildSection('beer'));
     }
     
     /**
