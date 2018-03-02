@@ -275,12 +275,11 @@ class HighwayCode{
     /**
      * Returns the HTML5 audio HTML information as a string
      * @param int $prim This should be the question prim number
-     * @return string|false Returns the HTML needed for the audio
+     * @return string Returns the HTML needed for the audio if audio enabled
      */
     protected function addAudio($prim){
         if($this->getAudioStatus()){
             return '<div class="sound" id="audioanswerhc'.$prim.'"><audio id="audiohc'.$prim.'" preload="auto"><source src="'.$this->getAudioPath().'mp3/hc'.$prim.'.mp3" type="audio/mpeg"><source src="'.$this->getAudioPath().'ogg/hc'.$prim.'.ogg" type="audio/ogg"></audio></div>';
         }
-        return false;
     }
 }
