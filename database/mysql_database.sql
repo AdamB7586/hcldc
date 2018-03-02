@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `highway_code_section` (
   `sec_no` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(1000) NOT NULL,
   PRIMARY KEY (`sec_no`)
-)
+);
 
 CREATE TABLE IF NOT EXISTS `highway_code` (
   `hcno` int(11) NOT NULL AUTO_INCREMENT,
@@ -19,4 +19,4 @@ CREATE TABLE IF NOT EXISTS `highway_code` (
   `module` smallint(6) DEFAULT NULL,
   PRIMARY KEY (`hcno`),
   UNIQUE KEY `hcno` (`hcno`)
-)
+);
