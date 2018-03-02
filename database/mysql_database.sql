@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `highway_code` (
   `imagetitle2` varchar(31) DEFAULT NULL,
   `imagetitle3` varchar(31) DEFAULT NULL,
   `imagefooter1` text,
-  `pub` varchar(1) UNSIGNED DEFAULT NULL,
+  `pub` varchar(1) DEFAULT NULL,
   `pubsec` smallint(6) UNSIGNED DEFAULT NULL,
   `pubsubsec` smallint(6) UNSIGNED DEFAULT NULL,
   `largetext` longtext,
