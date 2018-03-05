@@ -278,7 +278,7 @@ class HighwayCode{
      * @return string Returns the HTML needed for the audio if audio enabled
      */
     protected function addAudio($prim){
-        if($this->getAudioStatus()){
+        if($this->getAudioStatus() === true){
             return '<div class="sound" id="audioanswerhc'.$prim.'"><audio id="audiohc'.$prim.'" preload="auto"><source src="'.$this->getAudioPath().'mp3/hc'.$prim.'.mp3" type="audio/mpeg"><source src="'.$this->getAudioPath().'ogg/hc'.$prim.'.ogg" type="audio/ogg"></audio></div>';
         }
     }
