@@ -176,8 +176,9 @@ class HighwayCodeTest extends TestCase {
         $this->assertArrayHasKey('hcrule', $this->hc->buildSection(1)['rules'][0]);
         $this->assertContains('Rule 2', $this->hc->buildSection(1)['rules'][1]['hcrule']);
         $this->assertArrayHasKey('audio', $this->hc->buildSection(1)['rules'][1]);
+        $this->assertNotFalse($this->hc->buildSection(1)['rules'][1]['audio']);
         $this->hc->setAudioStatus(false);
-        $this->assertArrayNotHasKey('audio', $this->hc->buildSection(1)['rules'][1]);
+        $this->assertFalse($this->hc->buildSection(1)['rules'][1]['audio']);
         $this->assertTrue($this->hc->buildSection(1)['isFirst']);
         $this->assertFalse($this->hc->buildSection(1)['isLast']);
         $this->assertFalse($this->hc->buildSection(30)['isFirst']);

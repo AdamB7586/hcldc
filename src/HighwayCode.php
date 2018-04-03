@@ -220,7 +220,7 @@ class HighwayCode{
             if(is_array($rules)){
                 foreach($rules as $i => $rule){
                     if($rule['imagetitle1']){$rules[$i]['image'] = $this->buildImage($rule['imagetitle1']);}
-                    if($this->getAudioStatus()){$rules[$i]['audio'] = $this->addAudio($rule['hcno']);}
+                    $rules[$i]['audio'] = $this->addAudio($rule['hcno']);
                 }
             }
             return $rules;
@@ -281,6 +281,6 @@ class HighwayCode{
         if($this->getAudioStatus() === true){
             return '<div class="sound" id="audioanswerhc'.$prim.'"><audio id="audiohc'.$prim.'" preload="auto"><source src="'.$this->getAudioPath().'mp3/hc'.$prim.'.mp3" type="audio/mpeg"><source src="'.$this->getAudioPath().'ogg/hc'.$prim.'.ogg" type="audio/ogg"></audio></div>';
         }
-        return '';
+        return false;
     }
 }
