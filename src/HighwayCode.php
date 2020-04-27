@@ -6,23 +6,18 @@
  * @copyright (c) 2017, Adam Binnersley
  * @license https://github.com/AdamB7586/hcldc/blob/master/LICENSE MIT
  * @package HighwayCode
- * @version v1.0.0
  */
 namespace DVSA;
 
 use DBAL\Database;
+use Configuration\Config;
 
 class HighwayCode{
     protected $db;
-    
-    public $audioEnabled = true;
-    
-    protected $rulesTable = 'highway_code';
-    protected $sectionTable = 'highway_code_section';
+    protected $config;
     
     public $imagePath = '/images/highway-code/';
     private $rootPath;
-    private $audioPath;
     
     /**
      * Constructor sets the essential variables needed to get the class to work  
@@ -31,91 +26,18 @@ class HighwayCode{
      * @param string $audioPath This should be the path to the audio files the MP3 and OGG files will be included in the returned HTML automatically
      * @param boolean $audio If you don't want the audio file HTML to be returned set to false else set to true (default = true)
      */
-    public function __construct(Database $db, $rootPath = '', $audioPath = '', $audio = true){
+    public function __construct(Database $db, Config $config, $rootPath = ''){
         $this->db = $db;
-        $this->setRootPath($rootPath)
-             ->setAudioStatus($audio)
-             ->setAudioPath($audioPath);
+        $this->config = $config;
+        $this->setRootPath($rootPath);
     }
-    
-    /**
-     * Set the Rules table parameter
-     * @param string $table This should be the name of the rules table in the database
-     * @return $this HighwayCode
-     */
-    public function setRulesTable($table = 'highway_code'){
-        if(is_string($table)){
-            $this->rulesTable = $table;
-        }
-        return $this;
-    }
-    
+        
     /**
      * Returns the rules table name
      * @return string The name of the HC rules table will be returned
      */
     public function getRulesTable(){
         return $this->rulesTable;
-    }
-    
-    /**
-     * Sets the section table parameter
-     * @param string $table This should be the section table in the database
-     * @return $this HighwayCode
-     */
-    public function setSectionTable($table = 'highway_code_section'){
-        if(is_string($table)){
-            $this->sectionTable = $table;
-        }
-        return $this;
-    }
-    
-    /**
-     * Returns the section table name
-     * @return string The name of the HC section table will be returned
-     */
-    public function getSectionTable(){
-        return $this->sectionTable;
-    }
-    
-    /**
-     * Sets the audio status if it's set to true audio will be returned as part of the rules
-     * @param boolean $audio If set to true audio HTML will returned else nothing will be returned
-     * @return $this HighwayCode
-     */
-    public function setAudioStatus($audio){
-        if(is_bool($audio)){
-            $this->audioEnabled = $audio;
-        }
-        return $this;
-    }
-    
-    /**
-     * Returns the current status of the audio (true or false)
-     * @return boolean Returns true if audio should be returned else will return false
-     */
-    public function getAudioStatus(){
-        return (bool)$this->audioEnabled;
-    }
-    
-    /**
-     * Sets the audio path which should be inserted into the HTML code to be rendered (URL Path)
-     * @param string $path Sets the location where the audio files can be found
-     * @return $this HighwayCode
-     */
-    public function setAudioPath($path){
-        if(is_string($path)){
-            $this->audioPath = $path;
-        }
-        return $this;
-    }
-    
-    /**
-     * Returns the location where the audio files can be found
-     * @return string This will be the URL of the main folder where the highway code audio can be found (the MP3 and OGG folders will be added in the HTML)
-     */
-    public function getAudioPath(){
-        return $this->audioPath;
     }
     
     /**
@@ -171,9 +93,9 @@ class HighwayCode{
                 $sql[] = "`hcno` = ?";
                 $values[] = (int)$ruleid;
             }
-            return $this->db->query("SELECT * FROM `".$this->getRulesTable()."` WHERE ".implode(' OR ', $sql)." ORDER BY `hcno` ASC;", $values);
+            return $this->db->query("SELECT * FROM `{$this->config->table_hc_rules}` WHERE ".implode(' OR ', $sql)." ORDER BY `hcno` ASC;", $values);
         }
-        return $this->db->select($this->getRulesTable(), array('hcno' => $rule));
+        return $this->db->select($this->config->table_hc_rules, ['hcno' => $rule]);
     }
     
     /**
@@ -182,7 +104,7 @@ class HighwayCode{
      * @return boolean Returns true if it's the first section else returns false
      */
     public function isFirstSection($section){
-        if($this->getSectionName(array('<', $section)) === false){return true;}
+        if($this->getSectionName(['<', $section]) === false){return true;}
         return false;
     }
     
@@ -192,7 +114,7 @@ class HighwayCode{
      * @return boolean Returns true if it's the last section else returns false
      */
     public function isLastSection($section){
-        if($this->getSectionName(array('>', $section)) === false){return true;}
+        if($this->getSectionName(['>', $section]) === false){return true;}
         return false;
     }
     
@@ -202,7 +124,7 @@ class HighwayCode{
      * @return string|false If the section exists the name will be returned else will return false
      */
     public function getSectionName($section){
-        $title = $this->db->select($this->getSectionTable(), array('sec_no' => $section), array('title'));
+        $title = $this->db->select($this->config->table_hc_sections, ['sec_no' => $section], ['title']);
         if(!empty($title)){
             return $title['title'];
         }
@@ -216,11 +138,10 @@ class HighwayCode{
      */
     public function getSectionRules($section){
         if(is_numeric($section)){
-            $rules = $this->db->selectAll($this->getRulesTable(), array('pubsec' => (intval($section) + 1)), array('hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'), array('hcno' => 'ASC'));
+            $rules = $this->db->selectAll($this->config->table_hc_rules, ['pubsec' => (intval($section) + 1)], ['hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'], ['hcno' => 'ASC']);
             if(is_array($rules)){
                 foreach($rules as $i => $rule){
                     if($rule['imagetitle1']){$rules[$i]['image'] = $this->buildImage($rule['imagetitle1']);}
-                    $rules[$i]['audio'] = $this->addAudio($rule['hcno']);
                 }
             }
             return $rules;
@@ -235,7 +156,7 @@ class HighwayCode{
      */
     public function buildSection($section){
         if(is_numeric($section)){
-            $hc = array();
+            $hc = [];
             $hc['title'] = $this->getSectionName($section);
             $hc['rules'] = $this->getSectionRules($section);
             $hc['isFirst'] = $this->isFirstSection($section);
@@ -250,7 +171,7 @@ class HighwayCode{
      * @return string Returns a list of link for the highway code sections
      */
     public function listSections(){
-        return $this->db->selectAll($this->getSectionTable());
+        return $this->db->selectAll($this->config->table_hc_sections);
     }
     
     /**
@@ -261,25 +182,13 @@ class HighwayCode{
     public function buildImage($image){
         if(!is_null($image)){
             if(file_exists($this->getRootPath().$this->getImagePath().$image)){
-                $img = array();
+                $img = [];
                 list($width, $height) = getimagesize($this->getRootPath().$this->getImagePath().$image);
                 $img['image'] = $this->getImagePath().$image;
                 $img['width'] = $width;
                 $img['height'] = $height;
                 return $img;
             }
-        }
-        return false;
-    }
-    
-    /**
-     * Returns the HTML5 audio HTML information as a string
-     * @param int $prim This should be the question prim number
-     * @return string Returns the HTML needed for the audio if audio enabled
-     */
-    protected function addAudio($prim){
-        if($this->getAudioStatus() === true){
-            return '<div class="sound" id="audioanswerhc'.$prim.'"><audio id="audiohc'.$prim.'" preload="auto"><source src="'.$this->getAudioPath().'mp3/hc'.$prim.'.mp3" type="audio/mpeg"><source src="'.$this->getAudioPath().'ogg/hc'.$prim.'.ogg" type="audio/ogg"></audio></div>';
         }
         return false;
     }
