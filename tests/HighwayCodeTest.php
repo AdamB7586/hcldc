@@ -6,7 +6,8 @@ use PHPUnit\Framework\TestCase;
 use DBAL\Database;
 use DVSA\HighwayCode;
 
-class HighwayCodeTest extends TestCase {
+class HighwayCodeTest extends TestCase
+{
     protected $db;
     protected $hc;
     
@@ -16,21 +17,22 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::setAudioStatus
      * @covers DVSA\HighwayCode::setAudioPath
      */
-    protected function setUp() {
+    protected function setUp(): void
+    {
         $this->db = new Database($GLOBALS['HOSTNAME'], $GLOBALS['USERNAME'], $GLOBALS['PASSWORD'], $GLOBALS['DATABASE']);
-        if(!$this->db->isConnected()){
+        if (!$this->db->isConnected()) {
             $this->markTestSkipped(
                 'No local database connection is available'
             );
-        }
-        else{
+        } else {
             $this->db->query(file_get_contents(dirname(dirname(__FILE__)).'/database/mysql_database.sql'));
             $this->db->query(file_get_contents(dirname(__FILE__).'/sample_data/mysql_data.sql'));
             $this->hc = new HighwayCode($this->db, dirname(__FILE__).'/sample_data', '/audio', true);
         }
     }
     
-    protected function tearDown() {
+    protected function tearDown(): void
+    {
         $this->hc = null;
     }
     
@@ -39,7 +41,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::setRootPath
      * @covers DVSA\HighwayCode::getRootPath
      */
-    public function testSetPath() {
+    public function testSetPath()
+    {
         $this->assertEquals(dirname(__FILE__).'/sample_data', $this->hc->getRootPath());
         $this->assertObjectHasAttribute('audioEnabled', $this->hc->setRootPath(dirname(__FILE__).'/sample_data/some-random-dir'));
         $this->assertEquals(dirname(__FILE__).'/sample_data/some-random-dir', $this->hc->getRootPath());
@@ -53,7 +56,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::setImagePath
      * @covers DVSA\HighwayCode::getImagePath
      */
-    public function testSetImagePath() {
+    public function testSetImagePath()
+    {
         $this->assertEquals('/images/highway-code/', $this->hc->getImagePath());
         $this->assertObjectHasAttribute('audioEnabled', $this->hc->setImagePath(356345345));
         $this->assertEquals('/images/highway-code/', $this->hc->getImagePath());
@@ -71,7 +75,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::setSectionTable
      * @covers DVSA\HighwayCode::getSectionTable
      */
-    public function testSetTables() {
+    public function testSetTables()
+    {
         $this->assertEquals('highway_code', $this->hc->getRulesTable());
         $this->assertObjectHasAttribute('audioEnabled', $this->hc->setRulesTable(356345345));
         $this->assertEquals('highway_code', $this->hc->getRulesTable());
@@ -91,7 +96,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::setAudioPath
      * @covers DVSA\HighwayCode::getAudioPath
      */
-    public function testAudioPath() {
+    public function testAudioPath()
+    {
         $this->assertEquals('/audio', $this->hc->getAudioPath());
         $this->assertObjectHasAttribute('audioEnabled', $this->hc->setAudioPath(false));
         $this->assertEquals('/audio', $this->hc->getAudioPath());
@@ -104,7 +110,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::setAudioStatus
      * @covers DVSA\HighwayCode::getAudioStatus
      */
-    public function testAudioStatus() {
+    public function testAudioStatus()
+    {
         $this->assertTrue($this->hc->getAudioStatus());
         $this->assertObjectHasAttribute('audioEnabled', $this->hc->setAudioStatus(false));
         $this->assertFalse($this->hc->getAudioStatus());
@@ -118,7 +125,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getRule
      * @covers DVSA\HighwayCode::getRulesTable
      */
-    public function testGetRule(){
+    public function testGetRule()
+    {
         $this->assertFalse($this->hc->getRule(false));
         $this->assertFalse($this->hc->getRule('hello-world'));
         $this->assertFalse($this->hc->getRule(-1));
@@ -134,7 +142,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getSectionName
      * @covers DVSA\HighwayCode::getSectionTable
      */
-    public function testGetSectionName(){
+    public function testGetSectionName()
+    {
         $this->assertFalse($this->hc->getSectionName(-1));
         $this->assertFalse($this->hc->getSectionName('hello-world'));
         $this->assertEquals('Rules for pedestrians', $this->hc->getSectionName(1));
@@ -151,7 +160,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::getAudioStatus
      * @covers DVSA\HighwayCode::addAudio
      */
-    public function testGetSectionRules(){
+    public function testGetSectionRules()
+    {
         $this->assertFalse($this->hc->getSectionRules('test'));
         $this->assertArrayHasKey('hcrule', $this->hc->getSectionRules(2)[7]);
     }
@@ -171,7 +181,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::isFirstSection
      * @covers DVSA\HighwayCode::isLastSection
      */
-    public function testBuildSection(){
+    public function testBuildSection()
+    {
         $this->assertEquals('Rules for pedestrians', $this->hc->buildSection(1)['title']);
         $this->assertArrayHasKey('hcrule', $this->hc->buildSection(1)['rules'][0]);
         $this->assertContains('Rule 2', $this->hc->buildSection(1)['rules'][1]['hcrule']);
@@ -191,7 +202,8 @@ class HighwayCodeTest extends TestCase {
      * @covers DVSA\HighwayCode::listSections
      * @covers DVSA\HighwayCode::getSectionTable
      */
-    public function testListSections(){
+    public function testListSections()
+    {
         $this->assertArrayHasKey('title', $this->hc->listSections()[3]);
         $this->assertContains('Rules for ', $this->hc->listSections()[3]['title']);
     }
