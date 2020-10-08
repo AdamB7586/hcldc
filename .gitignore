@@ -1,0 +1,6 @@
+/vendor/
+/nbproject/
+composer.lock
+clover.xml
+*.lock
+*.bak
