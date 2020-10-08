@@ -12,7 +12,8 @@ namespace DVSA;
 use DBAL\Database;
 use Configuration\Config;
 
-class HighwayCode{
+class HighwayCode
+{
     protected $db;
     protected $config;
     
@@ -20,13 +21,14 @@ class HighwayCode{
     private $rootPath;
     
     /**
-     * Constructor sets the essential variables needed to get the class to work  
+     * Constructor sets the essential variables needed to get the class to work
      * @param Database $db This should be an instance of the Database class
      * @param string $rootPath This should be the server root path to get image information (do not include URL path)
      * @param string $audioPath This should be the path to the audio files the MP3 and OGG files will be included in the returned HTML automatically
      * @param boolean $audio If you don't want the audio file HTML to be returned set to false else set to true (default = true)
      */
-    public function __construct(Database $db, Config $config, $rootPath = ''){
+    public function __construct(Database $db, Config $config, $rootPath = '')
+    {
         $this->db = $db;
         $this->config = $config;
         $this->setRootPath($rootPath);
@@ -36,17 +38,19 @@ class HighwayCode{
      * Returns the rules table name
      * @return string The name of the HC rules table will be returned
      */
-    public function getRulesTable(){
+    public function getRulesTable()
+    {
         return $this->rulesTable;
     }
     
     /**
-     * Sets the folder where the images can be found this should be the URL path relative to the web root e.g '/images/highway-code/' 
+     * Sets the folder where the images can be found this should be the URL path relative to the web root e.g '/images/highway-code/'
      * @param string $path This should be the path of the highway code images folder
      * @return $this HighwayCode
      */
-    public function setImagePath($path){
-        if(is_string($path)){
+    public function setImagePath($path)
+    {
+        if (is_string($path)) {
             $this->imagePath = $path;
         }
         return $this;
@@ -56,7 +60,8 @@ class HighwayCode{
      * Returns the set path for the highway code images folder
      * @return string Location will be returned
      */
-    public function getImagePath(){
+    public function getImagePath()
+    {
         return $this->imagePath;
     }
     
@@ -65,8 +70,9 @@ class HighwayCode{
      * @param string $path This should be the server root path e.g. $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPERATOR.'includes'.DIRECTORY_SEPERATOR.'hcimages'
      * @return $this HighwayCode
      */
-    public function setRootPath($path){
-        if(is_string($path) && is_dir($path)){
+    public function setRootPath($path)
+    {
+        if (is_string($path) && is_dir($path)) {
             $this->rootPath = $path;
         }
         return $this;
@@ -76,20 +82,22 @@ class HighwayCode{
      * The root path that has been set will be returned
      * @return string This should be the server root path of the images
      */
-    public function getRootPath(){
+    public function getRootPath()
+    {
         return $this->rootPath;
     }
 
     /**
      * Returns the rule information as an array
      * @param int|array $rule Should be either the rule number or numbers as an array
-     * @return array 
+     * @return array
      */
-    public function getRule($rule){
-        if(is_array($rule)){
+    public function getRule($rule)
+    {
+        if (is_array($rule)) {
             $sql = array();
             $values = array();
-            foreach($rule as $ruleid){
+            foreach ($rule as $ruleid) {
                 $sql[] = "`hcno` = ?";
                 $values[] = (int)$ruleid;
             }
@@ -103,8 +111,11 @@ class HighwayCode{
      * @param int $section The current section number
      * @return boolean Returns true if it's the first section else returns false
      */
-    public function isFirstSection($section){
-        if($this->getSectionName(['<', $section]) === false){return true;}
+    public function isFirstSection($section)
+    {
+        if ($this->getSectionName(['<', $section]) === false) {
+            return true;
+        }
         return false;
     }
     
@@ -113,8 +124,11 @@ class HighwayCode{
      * @param int $section The current section number
      * @return boolean Returns true if it's the last section else returns false
      */
-    public function isLastSection($section){
-        if($this->getSectionName(['>', $section]) === false){return true;}
+    public function isLastSection($section)
+    {
+        if ($this->getSectionName(['>', $section]) === false) {
+            return true;
+        }
         return false;
     }
     
@@ -123,9 +137,10 @@ class HighwayCode{
      * @param int|array $section This should be the section number or an array for section less or greater than
      * @return string|false If the section exists the name will be returned else will return false
      */
-    public function getSectionName($section){
+    public function getSectionName($section)
+    {
         $title = $this->db->select($this->config->table_hc_sections, ['sec_no' => $section], ['title']);
-        if(!empty($title)){
+        if (!empty($title)) {
             return $title['title'];
         }
         return false;
@@ -136,12 +151,15 @@ class HighwayCode{
      * @param int $section  The section number you wish to return
      * @return string Returns the section HTML code
      */
-    public function getSectionRules($section){
-        if(is_numeric($section)){
+    public function getSectionRules($section)
+    {
+        if (is_numeric($section)) {
             $rules = $this->db->selectAll($this->config->table_hc_rules, ['pubsec' => (intval($section) + 1)], ['hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'], ['hcno' => 'ASC']);
-            if(is_array($rules)){
-                foreach($rules as $i => $rule){
-                    if($rule['imagetitle1']){$rules[$i]['image'] = $this->buildImage($rule['imagetitle1']);}
+            if (is_array($rules)) {
+                foreach ($rules as $i => $rule) {
+                    if ($rule['imagetitle1']) {
+                        $rules[$i]['image'] = $this->buildImage($rule['imagetitle1']);
+                    }
                 }
             }
             return $rules;
@@ -154,8 +172,9 @@ class HighwayCode{
      * @param int $section This should be the section number you wish to build
      * @return array|false An array containing all of the values required to build will be returned
      */
-    public function buildSection($section){
-        if(is_numeric($section)){
+    public function buildSection($section)
+    {
+        if (is_numeric($section)) {
             $hc = [];
             $hc['title'] = $this->getSectionName($section);
             $hc['rules'] = $this->getSectionRules($section);
@@ -170,7 +189,8 @@ class HighwayCode{
      * List all of the highway code sections
      * @return string Returns a list of link for the highway code sections
      */
-    public function listSections(){
+    public function listSections()
+    {
         return $this->db->selectAll($this->config->table_hc_sections);
     }
     
@@ -179,9 +199,10 @@ class HighwayCode{
      * @param string $image Should bet the image name
      * @return string|false returns the image HTML code with with and height
      */
-    public function buildImage($image){
-        if(!is_null($image)){
-            if(file_exists($this->getRootPath().$this->getImagePath().$image)){
+    public function buildImage($image)
+    {
+        if (!is_null($image)) {
+            if (file_exists($this->getRootPath().$this->getImagePath().$image)) {
                 $img = [];
                 list($width, $height) = getimagesize($this->getRootPath().$this->getImagePath().$image);
                 $img['image'] = $this->getImagePath().$image;
