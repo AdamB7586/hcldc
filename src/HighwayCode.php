@@ -20,12 +20,13 @@ class HighwayCode
     public $imagePath = '/images/highway-code/';
     private $rootPath;
     
+    protected $rulesTable;
+    
     /**
      * Constructor sets the essential variables needed to get the class to work
      * @param Database $db This should be an instance of the Database class
+     * @param Config $config This should be and instance of the configuration class
      * @param string $rootPath This should be the server root path to get image information (do not include URL path)
-     * @param string $audioPath This should be the path to the audio files the MP3 and OGG files will be included in the returned HTML automatically
-     * @param boolean $audio If you don't want the audio file HTML to be returned set to false else set to true (default = true)
      */
     public function __construct(Database $db, Config $config, $rootPath = '')
     {
@@ -113,20 +114,18 @@ class HighwayCode
      */
     public function isFirstSection($section)
     {
-        if ($this->getSectionName(['<', $section]) === false) {
-            return true;
-        }
-        return false;
+        return $this->isLastSection($section, '<');
     }
     
     /**
      * Checks to see if this is the last section
      * @param int $section The current section number
+     * @param string $dir Should be set to either '>' or '<' depedning on which direction you are checking if its the last
      * @return boolean Returns true if it's the last section else returns false
      */
-    public function isLastSection($section)
+    public function isLastSection($section, $dir = '>')
     {
-        if ($this->getSectionName(['>', $section]) === false) {
+        if ($this->getSectionName([$dir, $section]) === false) {
             return true;
         }
         return false;
