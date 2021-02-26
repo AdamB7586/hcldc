@@ -147,13 +147,13 @@ class HighwayCode
 
     /**
      * Returns the entire section HTML code
-     * @param int $section  The section number you wish to return
+     * @param int $section The section number you wish to return
      * @return string Returns the section HTML code
      */
     public function getSectionRules($section)
     {
         if (is_numeric($section)) {
-            $rules = $this->db->selectAll($this->config->table_hc_rules, ['pubsec' => (intval($section) + 1)], ['hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'], ['hcno' => 'ASC']);
+            $rules = $this->db->selectAll($this->config->table_hc_rules, ['pubsec' => $section], ['hcno', 'hcrule', 'hctitle', 'imagetitle1', 'imagetitle2', 'imagefooter1'], ['hcno' => 'ASC']);
             if (is_array($rules)) {
                 foreach ($rules as $i => $rule) {
                     if ($rule['imagetitle1']) {
